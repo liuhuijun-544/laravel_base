@@ -146,7 +146,7 @@
     {
         document.body.oncopy = function(e)
         {
-            alert('无复制权限');return false;
+            // alert('无复制权限');return false;
         }
     }@endif
 </script>

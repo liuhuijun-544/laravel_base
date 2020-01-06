@@ -129,45 +129,88 @@ Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['aut
 
 }); 
 
-
-//消息管理
-Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['auth', 'permission:message.manage']], function () {
-    //消息管理
-    Route::group(['middleware' => 'permission:message.message'], function () {
-        Route::get('message/data', 'MessageController@data')->name('admin.message.data');
-        Route::get('message/getUser', 'MessageController@getUser')->name('admin.message.getUser');
-        Route::get('message', 'MessageController@index')->name('admin.message');
-        //添加
-        Route::get('message/create', 'MessageController@create')->name('admin.message.create')->middleware('permission:message.message.create');
-        Route::post('message/store', 'MessageController@store')->name('admin.message.store')->middleware('permission:message.message.create');
-        //删除
-        Route::delete('message/destroy', 'MessageController@destroy')->name('admin.message.destroy')->middleware('permission:message.message.destroy');
-        //我的消息
-        Route::get('mine/message', 'MessageController@mine')->name('admin.message.mine')->middleware('permission:message.message.mine');
-        Route::post('message/{id}/read', 'MessageController@read')->name('admin.message.read')->middleware('permission:message.message.mine');
-
-        Route::get('message/count', 'MessageController@getMessageCount')->name('admin.message.get_count');
-
-        //添加的
-
-
+//人员管理
+Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['auth']], function () {
+    //客户
+    Route::group(['middleware' => 'permission:system.customer'], function () {
+        Route::get('customer','CustomerController@index')->name('admin.customer');
+        Route::get('customer/data','CustomerController@getData')->name('admin.customer.data');
+        Route::get('customer/add','CustomerController@add')->name('admin.customer.add');
+        Route::post('customer/save','CustomerController@save')->name('admin.customer.save');
+        Route::get('customer/{id}/edit','CustomerController@edit')->name('admin.customer.edit');
+        Route::post('customer/{id}/update','CustomerController@update')->name('admin.customer.update');
+        Route::get('customer/export','CustomerController@export')->name('admin.customer.export');
+        Route::get('customer/{id}/show','CustomerController@show')->name('admin.customer.show');
+        Route::get('customer/importExcel','CustomerController@importExcel')->name('admin.customer.importExcel');
+        Route::get('customer/exportExcel','CustomerController@exportExcel')->name('admin.customer.exportExcel');
+        Route::post('customer/import','CustomerController@import')->name('admin.customer.import');
+        Route::get('customer/getChannelDetail','CustomerController@getChannelDetail')->name('admin.customer.getChannelDetail');
+        Route::get('customer/turn','CustomerController@turn')->name('admin.customer.turn');
+        Route::get('customer/turn_student','CustomerController@turn_student')->name('admin.customer.turn_student');
     });
 
-});
+    Route::get('student/data','StudentController@getData')->name('admin.student.data');
 
-//少的路由信息
-Route::group(['namespace' => 'Admin', 'prefix' => 'admin', 'middleware' => ['auth', 'permission:tag.manage']], function () {
-    //消息管理
-    Route::group(['middleware' => 'permission:tag.manage'], function () {
-        Route::get('admin/tagmeal', 'MessageController@data')->name('admin.tagmeal');
-        Route::get('admin/tagmember', 'MessageController@data')->name('admin.tagmember');
+    //学员
+    Route::group(['middleware' => 'permission:system.student'], function () {
+        Route::get('student','StudentController@index')->name('admin.student');
+        Route::get('student/{id}/edit','StudentController@edit')->name('admin.student.edit');
+        Route::post('student/{id}/update','StudentController@update')->name('admin.student.update');
+        Route::get('student/{id}/del','StudentController@del')->name('admin.student.del');
+        Route::get('student/getTeacher','StudentController@getTeacher')->name('admin.student.getTeacher');
+        Route::get('student/{id}/show','StudentController@show')->name('admin.student.show');
     });
 
-    Route::get('meal', 'LabelController@index')->name('admin.meal');
-    Route::get('storeStorage', 'LabelController@index')->name('admin.storeStorage');
-    Route::get('comment', 'LabelController@index')->name('admin.comment');
-    Route::get('carrierAccuracy', 'LabelController@printer')->name('admin.statistics.carrierAccuracy');
-    Route::get('carrierSign', 'LabelController@printer')->name('admin.statistics.carrierSign');
+    //班级
+    Route::group(['middleware' => 'permission:system.course'], function () {
+        Route::get('course','CourseController@index')->name('admin.course');
+        Route::get('course/data','CourseController@getData')->name('admin.course.data');
+        Route::get('course/add','CourseController@add')->name('admin.course.add');
+        Route::get('course/week_add','CourseController@week_add')->name('admin.course.week_add');
+        Route::post('course/save','CourseController@save')->name('admin.course.save');
+        Route::get('course/{id}/edit','CourseController@edit')->name('admin.course.edit');
+        Route::post('course/{id}/update','CourseController@update')->name('admin.course.update');
+        Route::get('course/{id}/show','CourseController@show')->name('admin.course.show');
+        Route::get('course/show_student','CourseController@show_student')->name('admin.course.show_student');
+        Route::get('course/addStudent','CourseController@addStudent')->name('admin.course.addStudent');
+        Route::get('course/saveStudent','CourseController@saveStudent')->name('admin.course.saveStudent');
+        Route::get('course/delStudent','CourseController@delStudent')->name('admin.course.delStudent');
+        Route::get('course/export','CourseController@export')->name('admin.course.export');
+    });
 
+    //教室
+    Route::group(['middleware' => 'permission:system.classroom'], function () {
+        Route::get('classroom','ClassroomController@index')->name('admin.classroom');
+        Route::get('classroom/data','ClassroomController@getData')->name('admin.classroom.data');
+        Route::get('classroom/add','ClassroomController@add')->name('admin.classroom.add');
+        Route::post('classroom/save','ClassroomController@save')->name('admin.classroom.save');
+        Route::get('classroom/{id}/edit','ClassroomController@edit')->name('admin.classroom.edit');
+        Route::post('classroom/{id}/update','ClassroomController@update')->name('admin.classroom.update');
+        Route::get('classroom/{id}/del','ClassroomController@del')->name('admin.classroom.del');
+        Route::get('classroom/{id}/show','ClassroomController@show')->name('admin.classroom.show');
+    });
+
+    //课程安排
+    Route::group(['middleware' => 'permission:admin.classroom.addPlan'], function () {
+        Route::get('classroom/addPlan','ClassroomController@addPlan')->name('admin.classroom.addPlan');
+        Route::post('classroom/savePlan','ClassroomController@savePlan')->name('admin.classroom.savePlan');
+        Route::get('classroom/detail_add','ClassroomController@detail_add')->name('admin.classroom.detail_add');
+        Route::get('classroom/{id}/editPlan','ClassroomController@editPlan')->name('admin.classroom.editPlan');
+        Route::post('classroom/{id}/updatePlan','ClassroomController@updatePlan')->name('admin.classroom.updatePlan');
+    });
+
+    //订单管理
+    Route::group(['middleware' => 'permission:admin.order'], function () {
+        Route::get('order','OrderController@index')->name('admin.order');
+        Route::get('order/data','OrderController@getData')->name('admin.order.data');
+        Route::get('order/add','OrderController@add')->name('admin.order.add');
+        Route::post('order/save','OrderController@save')->name('admin.order.save');
+        Route::get('order/{id}/edit','OrderController@edit')->name('admin.order.edit');
+        Route::post('order/{id}/update','OrderController@update')->name('admin.order.update');
+        Route::get('order/{id}/show','OrderController@show')->name('admin.order.show');
+        Route::get('order/refund','OrderController@refund')->name('admin.order.refund');
+        Route::get('order/export','OrderController@export')->name('admin.order.export');
+    });
 });
+
 

@@ -4,24 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Customer extends Model
+class Order extends Model
 {
-	protected $table = 'customer';
+	protected $table = 'order';
     protected $guarded = [];
 
     public $timestamps = true;
 
-    public function responer_One()
+    public function student()
     {
-
-        return $this->hasOne('App\Models\User','id','responer');
+        return $this->hasOne('App\Models\Student','id','student_id');
     }
 
-    public function create_One()
+    public function created_info()
     {
         return $this->hasOne('App\Models\User','id','created_by');
     }
-
-
 }
     
